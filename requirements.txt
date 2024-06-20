@@ -1,6 +1,6 @@
-httpx
-httpx-socks
-lxml
+httpx==0.22.0
+tldextract==3.1.2
+lxml==4.9.3
 tldextract
 anyio==3.2.0
 appdirs==1.4.4
