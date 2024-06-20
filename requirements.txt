@@ -11,9 +11,11 @@ fake-useragent==0.1.11
 filelock==3.0.12
 h11==0.12.0
 httpcore==0.13.6
+httpx==0.18.2
 httpx-socks==0.4.1
 idna==2.10
 importlib-metadata==2.1.1
+lxml==4.6.3
 parse==1.19.0
 pyee==8.1.0
 pyppeteer==0.2.5
@@ -33,3 +35,8 @@ urllib3==1.26.5
 w3lib==1.22.0
 websockets==8.1
 zipp==3.4.1
+httpx
+httpx-socks
+lxml
+pyppeteer
+tldextract
