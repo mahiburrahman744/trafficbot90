@@ -1,23 +1,22 @@
-name: Run RateUp Script
+name: Auto Visit Script
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4 # Ensuring to use the latest version
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Set up Python
-      uses: actions/setup-python@v4 # Ensuring to use the latest version
+      uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: 3.8
 
     - name: Install dependencies
       run: |
@@ -25,4 +24,5 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run the script
-      run: python rate_up.py
+      run: |
+        python rate_up.py
