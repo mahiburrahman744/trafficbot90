@@ -3,8 +3,11 @@ import random
 import lxml.html
 import tldextract
 import httpx
+import logging
 from class_proxy import GetProxy
 from class_header import Header
+
+logging.basicConfig(level=logging.INFO)
 
 class RateUp(Header, GetProxy):
 
@@ -23,7 +26,7 @@ class RateUp(Header, GetProxy):
                 status = await self.validation_proxy(proxy, header)
                 if status['status']:
                     self.good += 1
-                    async with httpx.AsyncClient(proxies=proxy, headers=header, timeout=10) as client:
+                    async with httpx.AsyncClient(proxies={'http://': proxy}, headers=header, timeout=10) as client:
                         domain = site_url
                         for i in range(0, random.choice([2, 3, 4, 5, 6])):
                             if ext.subdomain:
@@ -33,7 +36,7 @@ class RateUp(Header, GetProxy):
                             try:
                                 response = await client.get(domain)
                                 content = response.text
-                                print(f'{resolution} | {status["country"]} | {domain} | {proxy} | {header}')
+                                logging.info(f'{resolution} | {status["country"]} | {domain} | {proxy} | {header}')
                                 header['referer'] = domain
                                 html = lxml.html.fromstring(content)
                                 all_urls = html.xpath('//a/@href')
@@ -44,10 +47,12 @@ class RateUp(Header, GetProxy):
                                 if domain in links_from_site:
                                     links_from_site.remove(domain)
                                 domain = random.choice(links_from_site)
-                            except:
+                            except Exception as e:
+                                logging.error(f"Failed to navigate domain: {e}")
                                 domain = random.choice(url_list)
-            except:
+            except Exception as e:
                 self.bad += 1
+                logging.error(f"Proxy validation failed: {proxy}, error: {e}")
 
     async def main(self, proxy_list_for_site, header_list, url_list):
         semaphore = asyncio.Semaphore(20)
@@ -63,8 +68,8 @@ class RateUp(Header, GetProxy):
 
         await queue.join()
         await asyncio.gather(*task_list, return_exceptions=True)
-        print(f'Good visits: {self.good}')
-        print(f'Bad visits: {self.bad}')
+        logging.info(f'Good visits: {self.good}')
+        logging.info(f'Bad visits: {self.bad}')
 
     def start(self, proxies, header_list, site_url):
         asyncio.run(self.main(proxies, header_list, site_url))
